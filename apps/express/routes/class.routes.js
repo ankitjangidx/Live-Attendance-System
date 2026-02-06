@@ -1,5 +1,5 @@
 import express from "express";
-import { isTeacher } from "../middleware/class.middleware.js";
+import { isStudent, isTeacher } from "../middleware/class.middleware.js";
 import {
   addStudentSchema,
   CreateClassSchema,
@@ -7,8 +7,14 @@ import {
 import {
   addStudentToClassController,
   createClassController,
+  getAllStudentsController,
+  getClassController,
+  myAttendanceController,
 } from "../controller/class.controller.js";
 import { validate } from "../middleware/validate.middleware.js";
+import { tokenValidate } from "../middleware/auth.middleware.js";
+
+
 const router = express.Router();
 
 router.post(
@@ -23,5 +29,9 @@ router.post(
   validate({ body: addStudentSchema }),
   addStudentToClassController
 );
+router.get("/class/:id", tokenValidate, getClassController);
+router.get("/students", isTeacher, getAllStudentsController);
+router.get("/class/:id/my-attendance", isStudent, myAttendanceController);
+
 
 export default router;
